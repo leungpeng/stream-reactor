@@ -44,7 +44,9 @@ class HbaseWriter(settings: HBaseSettings
   initialize(settings.maxRetries, settings.errorPolicy)
 
   private var columnsBytesMap = Map.empty[String, Array[Byte]]
-  private var connection = ConnectionFactory.createConnection(HBaseConfiguration.create())
+  private var configuration = HBaseConfiguration.create()
+  configuration.set("hbase.zookeeper.quorum", "zoo")
+  private var connection = ConnectionFactory.createConnection(configuration)
   private val tables = routeMapping.map(rm => (rm.getSource, connection.getTable(TableName.valueOf(rm.getTarget)))).toMap
   private val rowKeyMap = settings.rowKeyModeMap
 
